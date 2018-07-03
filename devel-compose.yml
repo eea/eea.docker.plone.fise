@@ -2,36 +2,37 @@ version: "2"
 
 services:
 
-  apache:
-    image: eeacms/apache:2.4-1.0
-    ports:
-    - "80:80"
-    labels:
-      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
-    environment:
-      SERVER_ADMIN: "helpdesk@fise.europa.eu"
-      SERVER_NAME: "fise-test.europa.eu"
-      RewriteRule: "^/(.*) http://plone:8080/VirtualHostBase/http/fise-test.europa.eu:80/Plone/VirtualHostRoot/$$1 [P,L]"
-      TZ: "Europe/Copenhagen"
-
   plone:
     build: .
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
-    - zeoserver
-    - memcached
+      - zeoserver
+      - memcached
     environment:
       ZOPE_MODE: "zeo_client"
       TZ: "Europe/Copenhagen"
     volumes:
-    - fise-downloads:/data/downloads
-    - fise-plone-data:/data
-    - ./src:/plone/instance/src/
-    - ./buildout.cfg:/plone/instance/buildout.cfg
+      - ./data:/data
+      - ./src/:/plone/instance/src/
+      - ./buildout.cfg:/plone/instance/buildout.cfg
     ports:
-      - "8190:8080"
-    # command: bash -c "tail -f /dev/null"
+      - "8081:8080"
+    entrypoint: sh -c "tail -f /dev/null"
+
+  async:
+    build: .
+    labels:
+      io.rancher.scheduler.affinity:host_label: cca=yes
+    depends_on:
+      - zeoserver
+      - memcached
+    environment:
+      ZOPE_MODE: "zeo_async"
+      TZ: "Europe/Copenhagen"
+    volumes:
+      - ./data:/data
+    entrypoint: sh -c "tail -f /dev/null"
 
   memcached:
     image: memcached:1.4.35
@@ -40,8 +41,8 @@ services:
     environment:
       TZ: "Europe/Copenhagen"
     command:
-    - "-m"
-    - "2048"
+      - "-m"
+      - "2048"
 
   zeoserver:
     image: plone:4.3.10
@@ -50,14 +51,8 @@ services:
     environment:
       TZ: "Europe/Copenhagen"
     command:
-    - zeoserver
+      - zeoserver
     volumes:
-    - fise-data:/data
-    # command: bash -c "tail -f /dev/null"
+      - ./data:/data
+      - ./data/blobstorage:/data/blobstorage
 
-
-volumes:
-  fise-plone-data:
-  fise-async-data:
-  fise-data:
-  fise-downloads:
