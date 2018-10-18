@@ -23,7 +23,7 @@ services:
   async:
     build: .
     labels:
-      io.rancher.scheduler.affinity:host_label: cca=yes
+      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
       - zeoserver
       - memcached
