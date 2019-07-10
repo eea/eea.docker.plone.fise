@@ -18,15 +18,18 @@ setup-data:		## Setup the datastorage for Zeo
 
 .PHONY: setup-plone
 setup-plone:		## Setup products folder and Plone user
+	docker-compose up -d
 	docker-compose exec plone bin/develop rb
 	docker-compose exec plone adduser admin admin
 
 .PHONY: start-plone
 start-plone:		## Start the plone process
+	docker-compose up -d
 	docker-compose exec plone bin/zeo_client fg
 
 .PHONY: start-frontend
 start-frontend:		## Start the frontend with Hot Module Reloading
+	docker-compose up -d
 	docker-compose exec frontend npm run start
 
 .PHONY: help
