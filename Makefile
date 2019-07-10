@@ -1,7 +1,14 @@
-.DEFAULT: help
+.DEFAULT: bootstrap
 
 help:		## Show this help.
 	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
+
+bootstrap: init setup-data setup-plone
+	@echo "bootstraping"
+
+init:
+	git submodule init
+	git submodule update
 
 setup-data:		## Setup the datastorage for Zeo
 	mkdir -p data/filestorage
