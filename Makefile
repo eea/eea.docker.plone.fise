@@ -1,17 +1,20 @@
-.DEFAULT: setup-data
+.DEFAULT: help
 
-setup-data:
+help:		## Show this help.
+	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
+
+setup-data:		## Setup the datastorage for Zeo
 	mkdir -p data/filestorage
 	mkdir -p data/zeoserver
 	@echo "Setting data permission to uid 500"
 	sudo chown -R 500 data
 
-setup-plone:
+setup-plone:		## Setup products folder and Plone user
 	docker-compose exec plone bin/develop rb
 	docker-compose exec plone adduser admin admin
 
-start-plone:
+start-plone:		## Start the plone process
 	docker-compose exec plone bin/zeo_client fg
 
-start-frontend:
+start-frontend:		## Start the frontend with Hot Module Reloading
 	docker-compose exec frontend npm run start
