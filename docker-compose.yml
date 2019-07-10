@@ -44,23 +44,25 @@ services:
       - ./data:/data
       # - ./data/blobstorage:/data/blobstorage
 
-  frontend:
-    image: plone/volto:latest
-    environment:
-      VOLTO_API_PATH: "http://localhost:8085/Plone2/"
-      RAZZLE_API_PATH: "http://localhost:8085/Plone2/"
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-    entrypoint: sh -c "tail -f /dev/null"
+  # frontend:
+  #   image: plone/volto:latest
+  #   environment:
+  #     VOLTO_API_PATH: "http://localhost:8085/Plone2/"
+  #     RAZZLE_API_PATH: "http://localhost:8085/Plone2/"
+  #   ports:
+  #     - "3000:3000"
+  #     - "3001:3001"
+  #   entrypoint: sh -c "tail -f /dev/null"
 
-  fise:
+  frontend:
     build: ./frontend
     environment:
-      VOLTO_API_PATH: "http://localhost:8085/Plone2/"
-      RAZZLE_API_PATH: "http://localhost:8085/Plone2/"
+      VOLTO_API_PATH: "http://localhost:8085/fise/"
+      RAZZLE_API_PATH: "http://localhost:8085/fise/"
       PORT: "4000"
     ports:
       - "4000:4000"
       - "4001:4001"
     entrypoint: sh -c "tail -f /dev/null"
+    volumes:
+      - ./frontend:/app/fise
