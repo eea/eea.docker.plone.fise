@@ -47,12 +47,12 @@ services:
   frontend:
     build: ./frontend
     environment:
-      VOLTO_API_PATH: "http://localhost:8085/fise/"
-      RAZZLE_API_PATH: "http://localhost:8085/fise/"
-      PORT: "4000"
+      VOLTO_API_PATH: "http://localhost:8085/fise"
+      RAZZLE_API_PATH: "http://localhost:8085/fise"
+      PORT: "3000"
     ports:
-      - "4000:4000"
-      - "4001:4001"
+      - "3000:3000"
+      - "3001:3001"
     entrypoint: sh -c "tail -f /dev/null"
     volumes:
       - ./frontend:/app/fise
