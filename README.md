@@ -4,6 +4,7 @@ Quick links for Forest website:
 - Demo website: https://demo-forests.eea.europa.eu
 - Old Plone Theme: https://github.com/eea/forests.theme
 - Plone content: https://github.com/eea/forests.content
+- New Volto-based frontend: https://github.com/eea/forests-frontend
 - Taskman project: https://taskman.eionet.europa.eu/projects/fise-dev/agile/board
 
 ## Quickstart for development
@@ -20,15 +21,15 @@ permissions.
 Because the src/ path is mapped to host folder, you'll need to run
 
 ```
-make setup-plone
+# make setup-plone
 ```
 
-to checkout the products in src. This also add an "admin:admin" user.
+to checkout the products in src. This also adds an "admin:admin" user.
 
 Now you can start the Plone instance with:
 
 ```
-make start-plone
+# make start-plone
 ```
 
 Plone is available on http://localhost:8085/ You need to create the /fise
@@ -37,5 +38,5 @@ plone website.
 Next, you can start the frontend server:
 
 ```
-make start-frontend
+# make start-frontend
 ```
