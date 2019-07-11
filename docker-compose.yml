@@ -55,7 +55,7 @@ services:
       - "3001:3001"
     entrypoint: sh -c "tail -f /dev/null"
     volumes:
-      - ./frontend:/app/fise
+      - ./frontend:/opt/fise
 
   # frontend:
   #   image: plone/volto:latest
