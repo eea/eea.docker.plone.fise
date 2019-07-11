@@ -20,7 +20,7 @@ setup-data:		## Setup the datastorage for Zeo
 setup-plone:		## Setup products folder and Plone user
 	docker-compose up -d
 	docker-compose exec plone bin/develop rb
-	docker-compose exec plone adduser admin admin
+	docker-compose exec plone bin/zeo_client adduser admin admin
 
 .PHONY: start-plone
 start-plone:		## Start the plone process
