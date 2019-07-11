@@ -12,19 +12,13 @@ Quick links for Forest website:
 First, we need the data storage. Run:
 
 ```
-# make setup-data
+# make bootstrap
 ```
 
 to setup the data folder. You'll need to enter password, to fix data folder
 permissions.
 
-Because the src/ path is mapped to host folder, you'll need to run
-
-```
-# make setup-plone
-```
-
-to checkout the products in src. This also adds an "admin:admin" user.
+This also adds an "admin:admin" user.
 
 Now you can start the Plone instance with:
 
