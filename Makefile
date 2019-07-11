@@ -21,6 +21,7 @@ setup-plone:		## Setup products folder and Plone user
 	docker-compose up -d
 	docker-compose exec plone bin/develop rb
 	docker-compose exec plone bin/zeo_client adduser admin admin
+	sudo chown -R `whoami` src/
 
 .PHONY: start-plone
 start-plone:		## Start the plone process
