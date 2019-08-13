@@ -1,4 +1,4 @@
-.DEFAULT: bootstrap
+.DEFAULT_GOAL := help
 
 .PHONY: bootstrap
 bootstrap: init setup-data setup-plone
@@ -8,6 +8,10 @@ bootstrap: init setup-data setup-plone
 init:
 	git submodule init
 	git submodule update
+
+.PHONY: build-plone
+build-plone:		## Build the Plone docker image
+	docker-compose build plone
 
 .PHONY: setup-data
 setup-data:		## Setup the datastorage for Zeo
@@ -26,12 +30,30 @@ setup-plone:		## Setup products folder and Plone user
 .PHONY: start-plone
 start-plone:		## Start the plone process
 	docker-compose up -d
-	docker-compose exec plone bin/zeo_client fg
+	# docker-compose exec plone bin/zeo_client fg
+	docker-compose exec plone sh -c ./admin.sh
 
 .PHONY: start-frontend
 start-frontend:		## Start the frontend with Hot Module Reloading
 	docker-compose up -d
 	docker-compose exec frontend npm run start
+
+.PHONY: start-frontend-production
+start-frontend-production:		## Start the frontend with Hot Module Reloading
+	docker-compose up -d
+	docker-compose exec frontend yarn build
+	docker-compose exec frontend yarn start:prod
+
+.PHONY: start-volto
+start-volto:		## Start the frontend with Hot Module Reloading
+	docker-compose up -d
+	docker-compose exec volto npm run start
+
+.PHONY: start-volto-production
+start-volto-production:		## Start the frontend with Hot Module Reloading
+	docker-compose up -d
+	docker-compose exec volto yarn build
+	docker-compose exec volto yarn start:prod
 
 .PHONY: help
 help:		## Show this help.
