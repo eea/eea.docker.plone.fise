@@ -4,22 +4,23 @@ services:
 
   plone:
     build: ./docker/
+    # image: kitconcept/plone.restapi:latest
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
       - zeo
       - memcached
-    environment:
-      TZ: "Europe/Copenhagen"
-      ZEO_ADDRESS: "zeo:8080"
-      ZOPE_MODE: "zeo_client"
-    volumes:
-      - ./src/:/plone/instance/src/
-      - ./docker/custom.cfg:/plone/instance/custom.cfg
-      # - ./data:/data
     ports:
       - "8085:8080"
     entrypoint: sh -c "tail -f /dev/null"
+    # environment:
+    #   TZ: "Europe/Copenhagen"
+    #   ZEO_ADDRESS: "zeo:8080"
+    #   ZOPE_MODE: "zeo_client"
+    # volumes:
+    # - ./src/:/plone/instance/src/
+    # - ./docker/custom.cfg:/plone/instance/custom.cfg
+    # - ./data:/data
 
   memcached:
     image: memcached:1.4.35
@@ -47,22 +48,30 @@ services:
   frontend:
     build: ./frontend
     environment:
-      VOLTO_API_PATH: "http://localhost:8085/fise"
-      RAZZLE_API_PATH: "http://localhost:8085/fise"
+      RAZZLE_API_PATH: "http://localhost:8085/Plone"
+      RAZZLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
       PORT: "3000"
     ports:
       - "3000:3000"
       - "3001:3001"
     entrypoint: sh -c "tail -f /dev/null"
-    volumes:
-      - ./frontend:/opt/fise
+    # volumes:
+    #   - ./frontend:/opt/fise
 
-  # frontend:
-  #   image: plone/volto:latest
-  #   environment:
-  #     VOLTO_API_PATH: "http://localhost:8085/Plone2/"
-  #     RAZZLE_API_PATH: "http://localhost:8085/Plone2/"
-  #   ports:
-  #     - "3000:3000"
-  #     - "3001:3001"
-  #   entrypoint: sh -c "tail -f /dev/null"
+  volto:
+    image: plone/volto:latest
+    environment:
+      RAZZLE_API_PATH: "http://localhost:8085/Plone"
+      RAZZLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
+      PORT: "4300"
+    ports:
+      - "4300:4300"
+      - "4301:4301"
+    entrypoint: sh -c "tail -f /dev/null"
+
+  restapi:
+    image: kitconcept/plone.restapi:latest
+    entrypoint: sh -c "tail -f /dev/null"
+    # ports:
+    #   - "8085:8080"
+
