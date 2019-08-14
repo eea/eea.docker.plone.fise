@@ -11,7 +11,10 @@ init:
 
 .PHONY: build-plone
 build-plone:		## Build the Plone docker image
+	docker-compose stop plone
+	docker-compose rm -f plone
 	docker-compose build plone
+	docker-compose up -d plone
 
 .PHONY: setup-data
 setup-data:		## Setup the datastorage for Zeo

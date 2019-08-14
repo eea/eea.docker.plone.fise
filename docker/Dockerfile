@@ -15,7 +15,7 @@ COPY admin.* /plone/
 COPY createsite.py /plone/createsite.py
 COPY etc /plone/etc
 
-ENV buildDeps="python-dev build-essential libssl-dev libbz2-dev"
+ENV buildDeps="python-dev build-essential libssl-dev libbz2-dev libldap2-dev libsasl2-dev libssl-dev"
 ENV runDeps="libmagic-dev"
 RUN apt-get install -y --no-install-recommends $buildDeps && \
     apt-get install -y --no-install-recommends $runDeps && \

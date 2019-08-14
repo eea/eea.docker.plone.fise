@@ -3,3 +3,12 @@ plone.restapi==3.7.5
 plone.schema==1.2.0
 collective.folderishtypes==2.1
 kitconcept.voltodemo==1.0.0a11
+
+# plone.app.ldap==1.4.3
+Products.CMFDefault==2.2.4
+Products.LDAPMultiPlugins==1.14
+Products.PloneLDAP==1.2
+dataflake.fakeldap==1.1
+plone.app.form==2.3.2
+python-ldap==2.4.22
+Products.LDAPUserFolder==2.23
