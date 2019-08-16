@@ -48,7 +48,7 @@ services:
 
   frontend:
     # build: ./frontend
-    image: tiberiuichim/fise-frontend:0.2
+    image: tiberiuichim/fise-frontend:0.6
     environment:
       RAZZLE_API_PATH: "http://localhost:8085/Plone"
       RAZZLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
