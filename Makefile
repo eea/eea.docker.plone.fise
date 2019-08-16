@@ -63,6 +63,14 @@ start-volto-production:		## Start the frontend with Hot Module Reloading
 	docker-compose exec volto yarn build
 	docker-compose exec volto yarn start:prod
 
+.PHONY: release-frontend
+release-frontend:		## Make a Docker Hub release for frontend
+	sh -c "cd frontend && docker build -t tiberiuichim/fise-frontend:latest -f Dockerfile . && docker push tiberiuichim/fise-frontend:latest"
+
+.PHONY: release-plone
+release-plone:		## Make a Docker Hub release for the Plone backend
+	sh -c "cd docker && docker build -t tiberiuichim/fise-plone:latest -f Dockerfile . && docker push tiberiuichim/fise-plone:latest"
+
 .PHONY: help
 help:		## Show this help.
 	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
