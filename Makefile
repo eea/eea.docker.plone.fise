@@ -8,6 +8,7 @@ bootstrap: init setup-data setup-plone
 init:
 	git submodule init
 	git submodule update
+	sh -c "cd frontend && git submodule init && git submodule update"
 
 .PHONY: build-plone
 build-plone:		## Build the Plone docker image

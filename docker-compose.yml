@@ -47,8 +47,8 @@ services:
       # - ./data/blobstorage:/data/blobstorage
 
   frontend:
-    # build: ./frontend
-    image: tiberiuichim/fise-frontend:0.6
+    build: ./frontend
+    # image: tiberiuichim/fise-frontend:1.0
     environment:
       RAZZLE_API_PATH: "http://localhost:8085/Plone"
       RAZZLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
@@ -57,8 +57,8 @@ services:
       - "3000:3000"
       - "3001:3001"
     # entrypoint: sh -c "tail -f /dev/null"
-    volumes:
-      - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
+    # volumes:
+      # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
       # - ./frontend:/opt/fise
 
   volto:
