@@ -79,3 +79,5 @@ services:
     # ports:
     #   - "8085:8080"
 
+# backend demo-forests-p5-plone
+# http-request set-path /VirtualHostBase/https/demo-forests-p5.eea.europa.eu:443/fise/VirtualHostRoot/_vh_api/%[path,regsub(\/api,,g)]
