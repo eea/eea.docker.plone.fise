@@ -61,22 +61,22 @@ services:
       # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
       - ./frontend:/opt/fise/
 
-  volto:
-    image: plone/volto:latest
-    environment:
-      RAZZLE_API_PATH: "http://localhost:8085/Plone"
-      RAZZLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
-      PORT: "4300"
-    ports:
-      - "4300:4300"
-      - "4301:4301"
-    entrypoint: sh -c "tail -f /dev/null"
+# volto:
+#   image: plone/volto:latest
+#   environment:
+#     RAZZLE_API_PATH: "http://localhost:8085/Plone"
+#     RAZZLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
+#     PORT: "4300"
+#   ports:
+#     - "4300:4300"
+#     - "4301:4301"
+#   entrypoint: sh -c "tail -f /dev/null"
 
-  restapi:
-    image: kitconcept/plone.restapi:latest
-    entrypoint: sh -c "tail -f /dev/null"
-    # ports:
-    #   - "8085:8080"
+# restapi:
+#   image: kitconcept/plone.restapi:latest
+#   entrypoint: sh -c "tail -f /dev/null"
+#   # ports:
+#   #   - "8085:8080"
 
 # backend demo-forests-p5-plone
 # http-request set-path /VirtualHostBase/https/demo-forests-p5.eea.europa.eu:443/fise/VirtualHostRoot/_vh_api/%[path,regsub(\/api,,g)]
