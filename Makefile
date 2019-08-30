@@ -76,3 +76,13 @@ release-plone:		## Make a Docker Hub release for the Plone backend
 help:		## Show this help.
 	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
 
+.PHONY: eslint
+eslint:		## Run eslint --fix on all *.js, *.json, *.jsx files in src
+	set -e; \
+		cd frontend;\
+		echo "Linting JS files";\
+		eslint --fix src/**/*.js;\
+		echo "Linting JSX files";\
+		eslint --fix src/**/*.jsx
+		echo "Linting JSON files";\
+		eslint --fix src/**/*.json;\
