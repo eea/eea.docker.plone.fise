@@ -13,7 +13,7 @@ services:
       - memcached
     ports:
       - "8085:8080"
-    # entrypoint: sh -c "tail -f /dev/null"
+    entrypoint: sh -c "tail -f /dev/null"
     environment:
       TZ: "Europe/Copenhagen"
       ZEO_ADDRESS: "zeo:8080"
@@ -50,8 +50,8 @@ services:
     # build: ./frontend
     image: tiberiuichim/fise-frontend:1.3
     environment:
-      RAZZLE_API_PATH: "http://localhost:8085/Plone"
-      RAZLLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
+      RAZZLE_API_PATH: "http://localhost:8085/fise"
+      RAZLLE_INTERNAL_API_PATH: "http://plone:8080/fise"
       PORT: "3000"
     ports:
       - "3000:3000"
