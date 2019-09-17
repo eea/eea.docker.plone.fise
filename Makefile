@@ -48,7 +48,7 @@ start-frontend:		## Start the frontend with Hot Module Reloading
 	docker-compose exec frontend npm run start
 
 .PHONY: frontend-shell
-start-frontend:		## Start a shell on the frontend service
+frontend-shell:		## Start a shell on the frontend service
 	docker-compose up -d
 	docker-compose exec frontend bash
 
