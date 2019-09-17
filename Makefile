@@ -47,19 +47,24 @@ start-frontend:		## Start the frontend with Hot Module Reloading
 	docker-compose up -d
 	docker-compose exec frontend npm run start
 
+.PHONY: frontend-shell
+start-frontend:		## Start a shell on the frontend service
+	docker-compose up -d
+	docker-compose exec frontend bash
+
 .PHONY: start-frontend-production
-start-frontend-production:		## Start the frontend with Hot Module Reloading
+start-frontend-production:		## Start the frontend service in production mode
 	docker-compose up -d
 	docker-compose exec frontend yarn build
 	docker-compose exec frontend yarn start:prod
 
 .PHONY: start-volto
-start-volto:		## Start the frontend with Hot Module Reloading
+start-volto:		## Start the volto service with Hot Module Reloading
 	docker-compose up -d
 	docker-compose exec volto npm run start
 
 .PHONY: start-volto-production
-start-volto-production:		## Start the frontend with Hot Module Reloading
+start-volto-production:		## Start the volto service in production mode
 	docker-compose up -d
 	docker-compose exec volto yarn build
 	docker-compose exec volto yarn start:prod
