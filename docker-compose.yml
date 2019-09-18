@@ -13,6 +13,27 @@ services:
       - memcached
     ports:
       - "8085:8080"
+    # entrypoint: sh -c "tail -f /dev/null"
+    environment:
+      TZ: "Europe/Copenhagen"
+      ZEO_ADDRESS: "zeo:8080"
+      ZOPE_MODE: "zeo_client"
+    volumes:
+    - ./src/:/plone/instance/src/
+    - ./docker/site.cfg:/plone/instance/site.cfg
+    # - ./data:/data
+
+  ploneshell:
+    # build: ./docker/
+    # image: kitconcept/plone.restapi:latest
+    image: tiberiuichim/fise-plone:0.1
+    labels:
+      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
+    depends_on:
+      - zeo
+      - memcached
+    ports:
+      - "8085:8080"
     entrypoint: sh -c "tail -f /dev/null"
     environment:
       TZ: "Europe/Copenhagen"

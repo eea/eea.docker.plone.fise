@@ -19,7 +19,9 @@ build-plone:		## Build the Plone docker image
 
 .PHONY: plone-shell
 plone-shell:		## Run a shell on the Plone docker image
-	docker-compose exec plone bash
+	docker-compose stop plone
+	docker-compose up -d ploneshell
+	docker-compose exec ploneshell bash
 
 .PHONY: setup-data
 setup-data:		## Setup the datastorage for Zeo
