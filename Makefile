@@ -40,19 +40,19 @@ setup-plone:		## Setup products folder and Plone user
 .PHONY: start-plone
 start-plone:		## Start the plone process
 	docker-compose stop ploneshell
-	docker-compose up -d zeoserver
+	docker-compose up -d zeo
 	docker-compose up plone
 	# docker-compose exec plone bin/zeo_client fg
 	# docker-compose exec plone sh -c ./admin.sh
 
 .PHONY: start-frontend
 start-frontend:		## Start the frontend with Hot Module Reloading
-	docker-compose up -d
+	docker-compose up -d frontend
 	docker-compose exec frontend npm run start
 
 .PHONY: frontend-shell
 frontend-shell:		## Start a shell on the frontend service
-	docker-compose up -d
+	docker-compose up -d frontend
 	docker-compose exec frontend bash
 
 .PHONY: start-frontend-production
