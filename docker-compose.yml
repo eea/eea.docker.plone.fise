@@ -5,7 +5,7 @@ services:
   plone:
     # build: ./docker/
     # image: kitconcept/plone.restapi:latest
-    image: tiberiuichim/fise-plone:0.1
+    image: tiberiuichim/fise-plone:0.4
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
@@ -26,7 +26,7 @@ services:
   ploneshell:
     # build: ./docker/
     # image: kitconcept/plone.restapi:latest
-    image: tiberiuichim/fise-plone:0.1
+    image: tiberiuichim/fise-plone:0.4
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
