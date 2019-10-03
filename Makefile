@@ -74,11 +74,11 @@ start-volto-production:		## Start the volto service in production mode
 
 .PHONY: release-frontend
 release-frontend:		## Make a Docker Hub release for frontend
-	sh -c "cd frontend && docker build -t tiberiuichim/fise-frontend:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-frontend:$(VERSION)"
+	sh -c "cd frontend && docker build --no-cache -t tiberiuichim/fise-frontend:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-frontend:$(VERSION)"
 
 .PHONY: release-plone
 release-plone:		## Make a Docker Hub release for the Plone backend
-	sh -c "cd docker && docker build -t tiberiuichim/fise-plone:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-plone:$(VERSION)"
+	sh -c "cd docker && docker build --no-cache -t tiberiuichim/fise-plone:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-plone:$(VERSION)"
 
 .PHONY: help
 help:		## Show this help.
