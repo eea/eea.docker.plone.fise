@@ -85,8 +85,9 @@ services:
   frontend-production:
     image: tiberiuichim/fise-frontend:3.5
     environment:
-      API_PATH: "http://fise.local"
-      INTERNAL_API_PATH: "http://plone:8080/fise"
+      API_PATH: "http://localhost:8085/fise"
+      INTERNAL_API_PATH: "http://ploneshell:8080/fise"
+      DEBUG: "*"
       PORT: "3000"
     ports:
       - "3000:3000"
