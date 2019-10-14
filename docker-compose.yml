@@ -88,14 +88,14 @@ services:
       API_PATH: "http://localhost:8085/fise"
       INTERNAL_API_PATH: "http://ploneshell:8080/fise"
       DEBUG: "*"
-      PORT: "3000"
+      PORT: "4000"
     ports:
-      - "3000:3000"
-      - "3001:3001"
+      - "4000:4000"
+      - "4001:4001"
     # entrypoint: sh -c "tail -f /dev/null"
-    # volumes:
+    volumes:
+      - ./frontend:/opt/fise/
     #   # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
-    #   - ./frontend:/opt/fise/
 
 # backend demo-forests-p5-plone
 # http-request set-path /VirtualHostBase/https/demo-forests-p5.eea.europa.eu:443/fise/VirtualHostRoot/_vh_api/%[path,regsub(\/api,,g)]
