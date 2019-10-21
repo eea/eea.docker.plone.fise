@@ -5,7 +5,7 @@ services:
   plone:
     # build: ./docker/
     # image: kitconcept/plone.restapi:latest
-    image: tiberiuichim/fise-plone:2.1
+    image: tiberiuichim/fise-plone:2.2
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
@@ -26,7 +26,7 @@ services:
   ploneshell:
     # build: ./docker/
     # image: kitconcept/plone.restapi:latest
-    image: tiberiuichim/fise-plone:2.1
+    image: tiberiuichim/fise-plone:2.2
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
@@ -69,7 +69,7 @@ services:
 
   frontend:
     # build: ./frontend
-    image: tiberiuichim/fise-frontend:3.5
+    image: tiberiuichim/fise-frontend:4.2
     environment:
       RAZZLE_API_PATH: "http://localhost:8085/fise"
       RAZLLE_INTERNAL_API_PATH: "http://plone:8080/fise"
@@ -77,25 +77,26 @@ services:
     ports:
       - "3000:3000"
       - "3001:3001"
+      - "8888:8888"
     entrypoint: sh -c "tail -f /dev/null"
     volumes:
-      # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
       - ./frontend:/opt/fise/
+      # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
 
   frontend-production:
-    image: tiberiuichim/fise-frontend:3.5
+    image: tiberiuichim/fise-frontend:4.1
     environment:
       API_PATH: "http://localhost:8085/fise"
       INTERNAL_API_PATH: "http://ploneshell:8080/fise"
-      DEBUG: "*"
-      PORT: "4000"
+      PORT: "3000"
     ports:
-      - "4000:4000"
-      - "4001:4001"
+      - "3000:3000"
+      - "3001:3001"
+      - "8888:8888"
     entrypoint: sh -c "tail -f /dev/null"
     volumes:
       - ./frontend:/opt/fise/
-    #   # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
+    #   - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
 
 # backend demo-forests-p5-plone
 # http-request set-path /VirtualHostBase/https/demo-forests-p5.eea.europa.eu:443/fise/VirtualHostRoot/_vh_api/%[path,regsub(\/api,,g)]
