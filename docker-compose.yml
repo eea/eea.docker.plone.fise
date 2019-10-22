@@ -72,7 +72,7 @@ services:
     image: tiberiuichim/fise-frontend:4.2
     environment:
       RAZZLE_API_PATH: "http://localhost:8085/fise"
-      RAZLLE_INTERNAL_API_PATH: "http://plone:8080/fise"
+      RAZZLE_INTERNAL_API_PATH: "http://plone:8080/fise"
       PORT: "3000"
     ports:
       - "3000:3000"
