@@ -80,6 +80,8 @@ release-frontend:		## Make a Docker Hub release for frontend
 release-plone:		## Make a Docker Hub release for the Plone backend
 	sh -c "cd docker && docker build --no-cache -t tiberiuichim/fise-plone:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-plone:$(VERSION)"
 
+#docker images | grep fise-plone | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi tiberiuichim/fise-plone:{}
+
 .PHONY: help
 help:		## Show this help.
 	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
