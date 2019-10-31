@@ -3,8 +3,6 @@ version: "2"
 services:
 
   plone:
-    # build: ./docker/
-    # image: kitconcept/plone.restapi:latest
     image: tiberiuichim/fise-plone:2.2
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
@@ -13,36 +11,10 @@ services:
       - memcached
     ports:
       - "8085:8080"
-    # entrypoint: sh -c "tail -f /dev/null"
     environment:
       TZ: "Europe/Copenhagen"
       ZEO_ADDRESS: "zeo:8080"
       ZOPE_MODE: "zeo_client"
-    # volumes:
-    # - ./src/:/plone/instance/src/
-    # - ./docker/site.cfg:/plone/instance/site.cfg
-    # - ./data:/data
-
-  ploneshell:
-    # build: ./docker/
-    # image: kitconcept/plone.restapi:latest
-    image: tiberiuichim/fise-plone:2.2
-    labels:
-      io.rancher.scheduler.affinity:host_label_ne: reserved=yes
-    depends_on:
-      - zeo
-      - memcached
-    ports:
-      - "8085:8080"
-    entrypoint: sh -c "tail -f /dev/null"
-    environment:
-      TZ: "Europe/Copenhagen"
-      ZEO_ADDRESS: "zeo:8080"
-      ZOPE_MODE: "zeo_client"
-    volumes:
-    - ./src/:/plone/instance/src/
-    - ./docker/site.cfg:/plone/instance/site.cfg
-    # - ./data:/data
 
   memcached:
     image: memcached:1.4.35
@@ -63,12 +35,8 @@ services:
       ZOPE_MODE: "zeo"
     command:
       - zeo
-    volumes:
-      - ./data:/data
-      # - ./data/blobstorage:/data/blobstorage
 
   frontend:
-    # build: ./frontend
     image: tiberiuichim/fise-frontend:4.2
     environment:
       RAZZLE_API_PATH: "http://localhost:8085/fise"
@@ -84,10 +52,10 @@ services:
       # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
 
   frontend-production:
-    image: tiberiuichim/fise-frontend:4.1
+    image: tiberiuichim/fise-frontend:4.2
     environment:
       API_PATH: "http://localhost:8085/fise"
-      INTERNAL_API_PATH: "http://ploneshell:8080/fise"
+      INTERNAL_API_PATH: "http://plone:8080/fise"
       PORT: "3000"
     ports:
       - "3000:3000"
@@ -96,7 +64,6 @@ services:
     entrypoint: sh -c "tail -f /dev/null"
     volumes:
       - ./frontend:/opt/fise/
-    #   - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
 
 # backend demo-forests-p5-plone
 # http-request set-path /VirtualHostBase/https/demo-forests-p5.eea.europa.eu:443/fise/VirtualHostRoot/_vh_api/%[path,regsub(\/api,,g)]
