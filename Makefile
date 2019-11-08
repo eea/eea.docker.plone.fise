@@ -41,8 +41,8 @@ init-submodules:
 
 .PHONY: setup-plone-data
 setup-plone-data:
-	mkdir -p plone-data/filestorage
-	mkdir -p plone-data/zeoserver
+	sudo mkdir -p plone-data/filestorage
+	sudo mkdir -p plone-data/zeoserver
 	@echo "Setting data permission to uid 500"
 	sudo chown -R 500 plone-data
 
@@ -54,7 +54,7 @@ endif
 	git clone $(SKELETON) .skel
 
 .PHONY: setup-backend-dev
-setup-backend-dev:.skel 		## Setup needed for developing the backend
+setup-backend-dev:setup-plone-data .skel 		## Setup needed for developing the backend
 	@if [ -z $(HAS_PLONE_OVERRIDE) ]; then \
 		echo "Overwriting the docker-compose.override.yml file!"; \
 		cp .skel/tpl/docker-compose.override.plone.yml docker-compose.override.yml; \
