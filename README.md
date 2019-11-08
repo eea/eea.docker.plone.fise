@@ -9,28 +9,12 @@ Quick links for Forest website:
 
 ## Quickstart for development
 
-First, we need the data storage. Run:
+Welcome to your new stack. Run ``make help`` to see what you can do.
 
-```
-# make bootstrap
-```
+## Setting up for backend developers
 
-to setup the data folder. You'll need to enter password, to fix data folder
-permissions.
+Run `make setup-backend-dev`
 
-This also adds an "admin:admin" user.
+## Setting up for frontend developers
 
-Now you can start the Plone instance with:
-
-```
-# make start-plone
-```
-
-Plone is available on http://localhost:8085/ You need to create the /fise
-plone website.
-
-Next, you can start the frontend server:
-
-```
-# make start-frontend
-```
+Run `make setup-frontend-dev`

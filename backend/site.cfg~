@@ -1,5 +1,5 @@
-# based in part from
-# https://github.com/plone/plone.restapi/blob/master/site.cfg
+# based on # https://github.com/plone/plone.restapi/blob/master/site.cfg
+
 [buildout]
 extensions = mr.developer
 
@@ -77,9 +77,6 @@ blob-storage-cache = /data/blobstorage
 forests.theme = git https://github.com/eea/forests.theme.git branch=volto-plone5
 forests.content = git https://github.com/eea/forests.content.git branch=volto-plone5
 
-# plone.restapi = git https://github.com/plone/plone.restapi.git
-# Products.PloneGlossary = git https://github.com/collective/Products.PloneGlossary.git branch=folderish-definition
-# Products.PloneLDAP = git https://github.com/collective/Products.PloneLDAP.git
-
 [versions]
 plone.restapi = 4.6.0
+kitconcept.voltodemo = 4.1
