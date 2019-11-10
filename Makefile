@@ -39,8 +39,7 @@ init-submodules:
 		echo "No frontend folder"; \
 	fi; \
 
-.PHONY: setup-plone-data
-setup-plone-data:
+plone-data:
 	sudo mkdir -p plone-data/filestorage
 	sudo mkdir -p plone-data/zeoserver
 	@echo "Setting data permission to uid 500"
@@ -50,15 +49,22 @@ ifeq "$(wildcard ${docker-compose.override.yml})" ""
 HAS_PLONE_OVERRIDE := "$(shell cat docker-compose.override.yml | grep plone-data)"
 endif
 
+ifeq "$(wildcard ${docker-compose.override.yml})" ""
+HAS_FRONTEND_OVERRIDE := "$(shell cat docker-compose.override.yml | grep frontend)"
+endif
+
 .skel:
 	git clone $(SKELETON) .skel
 
-.PHONY: setup-backend-dev
-setup-backend-dev:setup-plone-data .skel 		## Setup needed for developing the backend
+.PHONY: plone_override
+plone_override:.skel
 	@if [ -z $(HAS_PLONE_OVERRIDE) ]; then \
 		echo "Overwriting the docker-compose.override.yml file!"; \
 		cp .skel/tpl/docker-compose.override.plone.yml docker-compose.override.yml; \
-	fi; \
+	fi
+
+.PHONY: plone_install
+plone_install:plone-data
 	mkdir -p src
 	sudo chown -R 500 src
 	docker-compose up -d plone
@@ -66,15 +72,39 @@ setup-backend-dev:setup-plone-data .skel 		## Setup needed for developing the ba
 	docker-compose exec plone gosu plone /docker-initialize.py
 	docker-compose exec plone gosu plone bin/instance adduser admin admin
 	sudo chown -R `whoami` src/
+
+.PHONY: setup-backend-dev
+setup-backend-dev:plone_override plone_install 		## Setup needed for developing the backend
 	rm -rf .skel
 
-.PHONY: setup-frontend-dev
-setup-frontend-dev:		## Setup needed for developing the frontend
-	@if [ ! -f "docker-compose.override.yml" ]; then \
-		cp 'tpl/docker-compose.override.frontend.yml' docker-compose.override.yml; \
-	fi
+.PHONY: frontend_override
+frontend_override:.skel
+	@if [ -z $(HAS_FRONTEND_OVERRIDE) ]; then \
+		echo "Overwriting the docker-compose.override.yml file!"; \
+		cp .skel/tpl/docker-compose.override.frontend.yml docker-compose.override.yml; \
+	fi;
+
+.PHONY: frontend_install
+frontend_install:
 	docker-compose up -d frontend
 	docker-compose exec frontend npm install
+
+.PHONY: setup-frontend-dev
+setup-frontend-dev:frontend_override frontend_install		## Setup needed for developing the frontend
+	rm -rf .skel
+
+.PHONY: fullstack_override
+fullstack_override:.skel
+	@if [ -z "$(HAS_PLONE_OVERRIDE)" ]; then \
+		if [ -z "$(HAS_FRONTEND_OVERRIDE)" ]; then \
+			echo "Overwriting the docker-compose.override.yml file!"; \
+			cp .skel/tpl/docker-compose.override.fullstack.yml docker-compose.override.yml; \
+		fi; \
+	fi;
+
+.PHONY: setup-fullstack-dev
+setup-fullstack-dev:fullstack_override plone_install frontend_install		## Setup a fullstack developer
+	rm -rf .skel
 
 .PHONY: start-plone
 start-plone:docker-compose.override.yml		## Start the plone process
@@ -92,13 +122,13 @@ start-volto:docker-compose.override.yml		## Start the frontend with Hot Module R
 stop:		## Stop all services
 	docker-compose stop
 
-.PHONY: start-frontend-production
+.PHONY: start-volto-production
 start-volto-production:docker-compose.override.yml		## Start the frontend service in production mode
 	docker-compose up -d frontend
 	docker-compose exec frontend make build
 	docker-compose exec frontend yarn start:prod
 
-.PHONY: frontend-shell
+.PHONY: volto-shell
 volto-shell:docker-compose.override.yml		## Start a shell on the frontend service
 	docker-compose up -d frontend
 	docker-compose exec frontend bash
