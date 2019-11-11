@@ -113,7 +113,7 @@ start-plone:docker-compose.override.yml		## Start the plone process
 	docker-compose exec plone gosu plone /docker-initialize.py
 	docker-compose exec plone gosu plone bin/instance fg
 
-.PHONY: start-frontend
+.PHONY: start-volto
 start-volto:docker-compose.override.yml		## Start the frontend with Hot Module Reloading
 	docker-compose up -d frontend
 	docker-compose exec frontend npm run start
@@ -152,9 +152,15 @@ release-backend:		## Make a Docker Hub release for the Plone backend
 		make release
 
 .PHONY: build-backend
-build-backend:		## Make a Docker Hub release for the Plone backend
+build-backend:		## Just (re)build the backend image
 	set -e; \
 		cd $(BACKEND); \
+		make build-image
+
+.PHONY: build-frontend
+build-frontend:		## Just (re)build the frontend image
+	set -e; \
+		cd $(FRONTEND); \
 		make build-image
 
 .PHONY: eslint
