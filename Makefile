@@ -24,20 +24,13 @@ else
 endif
 
 docker-compose.override.yml:
-	@if [ ! -f 'docker-compose.override.yml' ]; then
+	@if [[ ! -f 'docker-compose.override.yml' ]]; then
 		$(error "You need to run a setup recipe first")
 	fi
 
 .PHONY: init-submodules
 init-submodules:
-	git submodule init; \
-	git submodule update; \
-	@if [ -d "${FRONTEND}" ]; then \
-		cd ${FRONTEND}; \
-		make init-submodules
-	else \
-		echo "No frontend folder"; \
-	fi; \
+	git submodule update --init --recursive
 
 plone-data:
 	sudo mkdir -p plone-data/filestorage
@@ -46,15 +39,16 @@ plone-data:
 	sudo chown -R 500 plone-data
 
 ifeq "$(wildcard ${docker-compose.override.yml})" ""
-HAS_PLONE_OVERRIDE := "$(shell cat docker-compose.override.yml | grep plone-data)"
+HAS_PLONE_OVERRIDE := $(shell cat docker-compose.override.yml | grep plone-data)
 endif
 
 ifeq "$(wildcard ${docker-compose.override.yml})" ""
-HAS_FRONTEND_OVERRIDE := "$(shell cat docker-compose.override.yml | grep frontend)"
+HAS_FRONTEND_OVERRIDE := $(shell cat docker-compose.override.yml | grep frontend)
 endif
 
 .skel:
-	git clone $(SKELETON) .skel
+	@rm -rf ./.skel
+	@git clone ${SKELETON} .skel
 
 .PHONY: plone_override
 plone_override:.skel
@@ -79,15 +73,20 @@ setup-backend-dev:plone_override plone_install 		## Setup needed for developing 
 
 .PHONY: frontend_override
 frontend_override:.skel
-	@if [ -z $(HAS_FRONTEND_OVERRIDE) ]; then \
+	@if [[ -z $(HAS_FRONTEND_OVERRIDE) ]]; then \
 		echo "Overwriting the docker-compose.override.yml file!"; \
 		cp .skel/tpl/docker-compose.override.frontend.yml docker-compose.override.yml; \
 	fi;
 
 .PHONY: frontend_install
 frontend_install:
+	echo ""
+	echo "Running frontend_install target"
+	echo ""
 	docker-compose up -d frontend
 	docker-compose exec frontend npm install
+	echo "Make sure that your frontend has mr.developer support"
+	docker-compose exec frontend npm run develop
 
 .PHONY: setup-frontend-dev
 setup-frontend-dev:frontend_override frontend_install		## Setup needed for developing the frontend
@@ -95,8 +94,8 @@ setup-frontend-dev:frontend_override frontend_install		## Setup needed for devel
 
 .PHONY: fullstack_override
 fullstack_override:.skel
-	@if [ -z "$(HAS_PLONE_OVERRIDE)" ]; then \
-		if [ -z "$(HAS_FRONTEND_OVERRIDE)" ]; then \
+	@if [[ -z $(HAS_PLONE_OVERRIDE) ]]; then \
+		if [[ -z $(HAS_FRONTEND_OVERRIDE) ]]; then \
 			echo "Overwriting the docker-compose.override.yml file!"; \
 			cp .skel/tpl/docker-compose.override.fullstack.yml docker-compose.override.yml; \
 		fi; \
@@ -110,13 +109,13 @@ setup-fullstack-dev:fullstack_override plone_install frontend_install		## Setup 
 start-plone:docker-compose.override.yml		## Start the plone process
 	docker-compose stop plone
 	docker-compose up -d plone
-	docker-compose exec plone gosu plone /docker-initialize.py
+	docker-compose exec plone gosu plone /docker-initialize.py || true
 	docker-compose exec plone gosu plone bin/instance fg
 
 .PHONY: start-volto
 start-volto:docker-compose.override.yml		## Start the frontend with Hot Module Reloading
 	docker-compose up -d frontend
-	docker-compose exec frontend npm run start
+	docker-compose exec frontend sh -c "NODE_OPTIONS=--max_old_space_size=4096 npm run start"
 
 .PHONY: stop
 stop:		## Stop all services
@@ -136,20 +135,24 @@ volto-shell:docker-compose.override.yml		## Start a shell on the frontend servic
 .PHONY: plone-shell
 plone-shell:docker-compose.override.yml		## Start a shell on the plone service
 	docker-compose up -d plone
-	docker-compose exec plone gosu plone /docker-initialize.py
+	docker-compose exec plone gosu plone /docker-initialize.py || true
 	docker-compose exec plone bash
 
 .PHONY: release-frontend
 release-frontend:		## Make a Docker Hub release for frontend
-	set -e;\
+	set -x;\
 		cd $(FRONTEND); \
-		make release
+		make release; \
+		cd ..; \
+		scripts/add_version_to_env.py --file ${FRONTEND}/docker-image.txt --name FRONTEND_IMAGE
 
 .PHONY: release-backend
 release-backend:		## Make a Docker Hub release for the Plone backend
-	set -e; \
+	set -x; \
 		cd $(BACKEND); \
-		make release
+		make release; \
+		cd ..; \
+		scripts/add_version_to_env.py --file ${BACKEND}/docker-image.txt --name BACKEND_IMAGE
 
 .PHONY: build-backend
 build-backend:		## Just (re)build the backend image
@@ -180,21 +183,21 @@ clean-releases:		## Cleanup space by removing old docker images
 	sh -c "docker images | grep ${FRONTEND_IMAGE_NAME} | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi ${FRONTEND_IMAGE_NAME}:{}"
 
 .PHONY: sync-makefiles
-sync-makefiles:		## Updates makefiles to latest github versions
-	@rm -rf ./.skel
-	@git clone ${SKELETON} .skel
+sync-makefiles:.skel		## Updates makefiles to latest github versions
 	@cp .skel/Makefile ./
 	@cp .skel/backend/Makefile ./backend/Makefile
-	@if [ -d "${FRONTEND}" ]; then \
-		cp .skel/_frontend/Makefile ./frontend/; \
+	@cp -i .skel/scripts/* ./scripts/
+	@if [[ -d ${FRONTEND} ]]; then \
+		cp -i .skel/_frontend/Makefile ./frontend/; \
+		cp -i .skel/_frontend/pkg_helper.py ./frontend/; \
 	else \
-		echo "No frontend folder"; \
+		echo "No frontend folder, skipping"; \
 	fi; \
-	rm -rf ./.skel
+	rm -rf ./.skel; \
+	echo "Sync completed"
 
 .PHONY: sync-dockercompose
-sync-dockercompose:		## Updates docker-compose.yml to latest github versions
-	git clone ${SKELETON} .skel
+sync-dockercompose:.skel		## Updates docker-compose.yml to latest github versions
 	cp .skel/docker-compose.yml ./
 	rm -rf ./.skel
 
