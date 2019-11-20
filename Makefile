@@ -16,7 +16,7 @@ BACKEND_DOCKERIMAGE_FILE := "${BACKEND}/docker-image.txt"
 export BACKEND_IMAGE := $(shell cat $(BACKEND_DOCKERIMAGE_FILE))
 BACKEND_IMAGE_NAME := $(call image-name-split,$(BACKEND_IMAGE))
 
-ifneq "$(wildcard ${FRONTEND}/.)" ""
+ifneq "$(wildcard ${FRONTEND}/docker-image.txt)" ""
 FRONTEND_DOCKERIMAGE_FILE := "${FRONTEND}/docker-image.txt"
 export FRONTEND_IMAGE := $(shell cat $(FRONTEND_DOCKERIMAGE_FILE))
 FRONTEND_IMAGE_NAME := $(call image-name-split,$(FRONTEND_IMAGE))
@@ -68,7 +68,7 @@ plone_install:plone-data
 	sudo chown -R `whoami` src/
 
 .PHONY: setup-backend-dev
-setup-backend-dev:plone_override plone_install 		## Setup needed for developing the backend
+setup-backend-dev:init-submodules plone_override plone_install 		## Setup needed for developing the backend
 	rm -rf .skel
 
 .PHONY: frontend_override
@@ -80,16 +80,17 @@ frontend_override:.skel
 
 .PHONY: frontend_install
 frontend_install:
-	echo ""
-	echo "Running frontend_install target"
-	echo ""
+	@echo ""
+	@echo "Running frontend_install target"
+	@echo ""
 	docker-compose up -d frontend
-	docker-compose exec frontend npm install
-	echo "Make sure that your frontend has mr.developer support"
 	docker-compose exec frontend npm run develop
+	docker-compose exec frontend make activate-all
+	docker-compose exec frontend npm install
+	docker-compose exec frontend make clean-addons
 
 .PHONY: setup-frontend-dev
-setup-frontend-dev:frontend_override frontend_install		## Setup needed for developing the frontend
+setup-frontend-dev:init-submodules frontend_override frontend_install		## Setup needed for developing the frontend
 	rm -rf .skel
 
 .PHONY: fullstack_override
