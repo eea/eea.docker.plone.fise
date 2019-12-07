@@ -1,1 +1,1 @@
-tiberiuichim/fise-plone:5.2-4.40
+tiberiuichim/fise-plone:5.2-4.41
