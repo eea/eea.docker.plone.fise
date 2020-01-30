@@ -212,6 +212,10 @@ start-npm-cache:		## Starts the Verdacio NPM cache
 	cd ${FRONTEND}; \
 	PATH=$(HOME)/.node_modules/bin:$(PATH) verdaccio -l 0.0.0.0:4873 -c verdaccio-config.yaml
 
+.PHONY: test-frontend-image
+test-frontend-image:		## Try the frontend image separately
+	docker run --rm -it -p $(FRONTEND_PORT):$(FRONTEND_PORT) --user node $(FRONTEND_IMAGE_NAME) bash
+
 .PHONY: help
 help:		## Show this help.
 	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
