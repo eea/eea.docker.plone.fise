@@ -1,0 +1,19 @@
+version: "2.1"
+
+services:
+
+  zeo:
+    volumes:
+      - ./plone-data:/data
+
+  plone:
+    volumes:
+      - ./src:/plone/instance/src
+      - ./backend/site.cfg:/plone/instance/site.cfg
+    environment:
+      CORS_ALLOW_ORIGIN: "http://localhost:5000"
+
+  frontend:
+    volumes:
+      - ./frontend:/opt/frontend
+      - ./.git:/opt/.git
