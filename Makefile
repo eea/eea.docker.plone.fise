@@ -7,6 +7,8 @@ SHELL := /bin/bash
 image-name-split = $(firstword $(subst :, ,$1))
 
 SKELETON := "https://github.com/eea/plone5-fullstack-skeleton.git"
+BISE-VOLTO-P5 := "https://github.com/eea/eea.docker.plone.bise.git"
+FISE-VOLTO-P5 := "https://github.com/eea/eea.docker.plone.fise.git"
 
 # identify project folders
 BACKEND := backend
@@ -30,6 +32,8 @@ docker-compose.override.yml:
 
 .PHONY: init-submodules
 init-submodules:
+	echo "init submodules";\
+	set -e;\
 	git submodule update --init --recursive
 
 plone-data:
@@ -50,6 +54,14 @@ endif
 	@rm -rf ./.skel
 	@git clone ${SKELETON} .skel
 
+.bise-p5:
+	@rm -rf ./.bise-p5
+	@git clone ${BISE-VOLTO-P5} .bise-p5
+
+.fise-p5:
+	@rm -rf ./.fise-p5
+	@git clone ${FISE-VOLTO-P5} .fise-p5
+
 .PHONY: plone_override
 plone_override:.skel
 	@if [ -z "$(HAS_PLONE_OVERRIDE)" ]; then \
@@ -62,7 +74,7 @@ plone_install:plone-data
 	mkdir -p src
 	sudo chown -R 500 src
 	docker-compose up -d plone
-	docker-compose exec plone gosu plone bin/develop rb
+	docker-compose exec plone gosu plone buildout -c site.cfg
 	docker-compose exec plone gosu plone /docker-initialize.py
 	docker-compose exec plone gosu plone bin/instance adduser admin admin
 	sudo chown -R `whoami` src/
@@ -84,6 +96,7 @@ frontend-install:		## Activates frontend modules for development
 	@echo "Running frontend-install target"
 	@echo ""
 	docker-compose up -d frontend
+	docker-compose exec frontend npm install mrs-developer
 	docker-compose exec frontend npm run develop
 	docker-compose exec frontend make activate-all
 	docker-compose exec frontend npm install
@@ -103,7 +116,7 @@ fullstack_override:.skel
 	fi;
 
 .PHONY: setup-fullstack-dev
-setup-fullstack-dev:fullstack_override plone_install frontend-install		## Setup a fullstack developer
+setup-fullstack-dev:init-submodules fullstack_override plone_install frontend-install		## Setup a fullstack developer
 	rm -rf .skel
 
 .PHONY: start-plone
@@ -203,6 +216,12 @@ sync-dockercompose:.skel		## Updates docker-compose.yml to latest github version
 	cp .skel/docker-compose.yml ./
 	rm -rf ./.skel
 
+.PHONY: sync-BISE
+sync-BISE:.bise-p5  ## Updates all files to latest github version of BISE
+
+.PHONY: sync-FISE
+sync-FISE:.fise-p5  ## Updates all files to latest github version of FISE
+
 .PHONY: shell
 shell:		## Starts a shell with proper env set
 	$(SHELL)
@@ -219,3 +238,4 @@ test-frontend-image:		## Try the frontend image separately
 .PHONY: help
 help:		## Show this help.
 	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
+

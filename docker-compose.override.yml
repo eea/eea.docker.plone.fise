@@ -8,10 +8,11 @@ services:
 
   plone:
     volumes:
+      - ./plone-data:/data
       - ./src:/plone/instance/src
       - ./backend/site.cfg:/plone/instance/site.cfg
     environment:
-      CORS_ALLOW_ORIGIN: "http://localhost:5000"
+      CORS_ALLOW_ORIGIN: "http://localhost:5000,http://localhost:8085"
 
   frontend:
     volumes:
