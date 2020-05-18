@@ -8,7 +8,6 @@ services:
 
   plone:
     volumes:
-      - ./plone-data:/data
       - ./src:/plone/instance/src
       - ./backend/site.cfg:/plone/instance/site.cfg
     environment:
@@ -18,3 +17,5 @@ services:
     volumes:
       - ./frontend:/opt/frontend
       - ./.git:/opt/.git
+    env_file:
+      - ./.env
