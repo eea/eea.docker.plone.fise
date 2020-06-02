@@ -22,6 +22,9 @@ services:
     environment:
       RAZZLE_API_PATH: "http://localhost:${BACKEND_PORT}/${SITE_NAME:-Plone}"
       RAZZLE_INTERNAL_API_PATH: "http://plone:8080/${SITE_NAME:-Plone}"
+      RAZZLE_FRONTEND_VERSION: "${"RAZZLE_FRONTEND_VERSION:?no such variable}"
+      RAZZLE_FRONTEND_VERSION_URL: "${RAZZLE_FRONTEND_VERSION_URL:? no such variable}"
+      RAZZLE_FRONTEND_PUBLISHED_AT: "${RAZZLE_FRONTEND_PUBLISHED_AT:? no such variable}"
       PORT: "${FRONTEND_PORT:-3000}"
     ports:
       - "${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}"
