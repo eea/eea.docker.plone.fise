@@ -52,5 +52,45 @@ services:
       - "-m"
       - "2048"
 
+  searchapi:
+    image: eeacms/fise.nfi.search
+    env_file:
+      - docker/postgres.env
+      - docker/app.env
+    volumes:
+      - ./data-files:/var/local/fise.search/data_files
+      - ./import-files:/var/local/fise.search/import_files
+    depends_on:
+      - postgres
+      - elasticsearch
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.4.2
+    environment:
+      - cluster.name=nfi-cluster
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      - TAKE_FILE_OWNERSHIP=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  postgres:
+    image: postgres:11.6
+    env_file:
+      - docker/postgres.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
+    driver: local
+  es-data:
+    driver: local
+
 # backend demo-forests-p5-plone
 # http-request set-path /VirtualHostBase/https/demo-forests-p5.eea.europa.eu:443/fise/VirtualHostRoot/_vh_api/%[path,regsub(\/api,,g)]
